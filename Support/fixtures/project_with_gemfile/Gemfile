@@ -1,0 +1,5 @@
+source "http://rubygems.org"
+
+gem "guard-rspec", "~> 2.3.3"
+gem "rspec", "~> 2.12.0"
+gem "simplecov", "~> 0.7.1"

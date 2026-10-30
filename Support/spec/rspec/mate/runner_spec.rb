@@ -173,7 +173,7 @@ describe RSpec::Mate::Runner do
       expect(Open3).to receive(:popen3).with(*cmd)
     end
 
-    context 'with Gemfile.lock' do
+    context 'with a Gemfile' do
       it 'uses `bundle exec rspec`' do
         ENV["TM_PROJECT_DIRECTORY"] = fixtures_path("project_with_gemfile")
         expect_rspec_to_be_run_as(%w[bundle exec rspec some args])
@@ -181,7 +181,7 @@ describe RSpec::Mate::Runner do
       end
     end
 
-    context 'without Gemfile.lock' do
+    context 'without a Gemfile' do
       it 'uses `bin/rspec`, if a binstub is present' do
         ENV["TM_PROJECT_DIRECTORY"] = fixtures_path("project_with_binstub")
         expect_rspec_to_be_run_as(%w[bin/rspec some args])
@@ -198,7 +198,7 @@ describe RSpec::Mate::Runner do
     end
 
     context 'when TM_RSPEC_BASEDIR is set' do
-      it 'looks there for the Gemfile.lock' do
+      it 'looks there for the Gemfile' do
         ENV["TM_PROJECT_DIRECTORY"] = fixtures_path("project_with_gemfile")
         ENV["TM_RSPEC_BASEDIR"] = fixtures_path("project_with_gemfile") + "/subdir"
         expect_rspec_to_be_run_as(%w[bundle exec rspec some args])
