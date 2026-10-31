@@ -5,10 +5,12 @@
 	<key>beforeRunningCommand</key>
 	<string>nop</string>
 	<key>command</key>
-	<string>#!/usr/bin/env ruby18
+	<string>#!/usr/bin/env bash
 
+"${TM_RUBY:-ruby}" &lt;&lt;'RUBYEOF'
 require ENV['TM_BUNDLE_SUPPORT'] + "/lib/rspec/mate/switch_command"
 RSpec::Mate::SwitchCommand.new.go_to_twin(ENV['TM_PROJECT_DIRECTORY'], ENV['TM_FILEPATH'])
+RUBYEOF
 </string>
 	<key>input</key>
 	<string>none</string>
