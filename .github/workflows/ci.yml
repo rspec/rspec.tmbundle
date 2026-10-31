@@ -1,0 +1,52 @@
+name: CI
+
+# The bundle's own specs, on the current lines of Ruby.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+# A new push makes the run in progress moot.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  specs:
+    # TextMate is a Mac application, so the bundle's commands only ever run on macOS.
+    runs-on: macos-latest
+
+    # The two current lines of Ruby.
+    strategy:
+      matrix:
+        ruby: ['3.4', '4.0']
+
+    steps:
+      # The two checkouts sit side by side, as bundles do in TextMate.
+      - uses: actions/checkout@v7
+        with:
+          path: rspec.tmbundle
+
+      # The runner asks the Ruby bundle's executable finder how to start RSpec.
+      # TextMate hands its location to the bundle through TM_RUBY_BUNDLE_SUPPORT,
+      # from the dependency the bundle declares in its info.plist.
+      - uses: actions/checkout@v7
+        with:
+          repository: textmate/ruby.tmbundle
+          path: ruby.tmbundle
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          working-directory: rspec.tmbundle/Support
+          bundler-cache: true
+
+      - name: Run the specs
+        working-directory: rspec.tmbundle/Support
+        env:
+          TM_RUBY_BUNDLE_SUPPORT: ${{ github.workspace }}/ruby.tmbundle/Support
+          RUBYOPT: -W:deprecated
+        run: bundle exec rspec
